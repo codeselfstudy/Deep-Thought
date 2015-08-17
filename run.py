@@ -1,5 +1,5 @@
 from bender import SlackBot
-import commands
+import bot_commands
 
 if __name__ == '__main__':
     bot = SlackBot()
