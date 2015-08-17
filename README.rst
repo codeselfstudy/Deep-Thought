@@ -1,7 +1,7 @@
 A Slackbot for the Code Self Study Chatroom
 ===========================================
 
-This code runs the _Deep Thought_ bot in the Code Self Study chatroom. If you want to add functionality, fork this repo, edit the commands.py file and make a pull request on the :code:`dev` branch.
+This code runs the *Deep Thought* bot in the Code Self Study chatroom. If you want to add functionality, fork this repo, edit the commands.py file and make a pull request on the :code:`dev` branch.
 
 Installation
 ------------
