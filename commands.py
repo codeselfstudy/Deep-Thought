@@ -10,6 +10,7 @@ from bender.signals import event_received, message_received
 
 WUNDERGROUND_API_KEY = os.environ['SLACK_API_TOKEN']
 
+
 def roll_die(sides):
     return randint(1, int(sides))
 
