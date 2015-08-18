@@ -8,7 +8,7 @@ from random import randint
 
 from bender.signals import event_received, message_received
 
-WUNDERGROUND_API_KEY = os.environ['SLACK_API_TOKEN']
+WUNDERGROUND_API_KEY = os.environ['WUNDERGROUND_API_KEY']
 
 
 def roll_die(sides):
@@ -41,9 +41,6 @@ def spock(sender, **kwargs):
 
         if re.search('spock', event.text, re.IGNORECASE):
             sender.slack_client.send_message('https://goo.gl/7wBOIB', event.channel)
-            #def spock():
-                #"""Deactivate the function to avoid repeated posts."""
-                #pass
     except:
         pass
 
@@ -54,7 +51,7 @@ def meaning_of_life(sender, **kwargs):
     try:
         event = kwargs['event']
 
-        if re.search('life', event.text, re.IGNORECASE):
+        if re.search('meaning of life', event.text, re.IGNORECASE):
             sender.slack_client.send_message('42', event.channel)
     except:
         pass
@@ -66,18 +63,18 @@ def dice(sender, **kwargs):
     try:
         event = kwargs['event']
 
-        #print("EVENT")
-        #print(type(event))
-        regex = re.compile('roll\(d(\d{1,4})\)')
-        #if 'text' in event:
+        regex = re.compile('roll \(d(\d{1,4})\)')
         s = regex.search(event.text)
         if s is not None:
             sides = int(s.groups()[0])
             if sides > 1 and sides < 9999:
-                output = 'I rolled a {}-sided die and got {}'.format(str(sides),
-                        str(roll_die(sides)))
+                output = 'I rolled a {}-sided die and got {}'.format(
+                    str(sides),
+                    str(roll_die(sides))
+                )
                 sender.slack_client.send_message(output, event.channel)
     except:
+        print('exception on dice()')
         pass
 
 
@@ -91,8 +88,10 @@ def weather(sender, **kwargs):
         w = regex.search(event.text)
         if w is not None:
             zipcode = w.groups()[0]
-            q = 'http://api.wunderground.com/api/{key}/geolookup/q/{zipcode}.json'.format(key=WUNDERGROUND_API_KEY,
-                        zipcode=zipcode)
+            q = 'http://api.wunderground.com/api/{key}/geolookup/q/{zipcode}.json'.format(
+                key=WUNDERGROUND_API_KEY,
+                zipcode=zipcode
+            )
             res = json.loads(requests.get(q).text)
             weather_path = res['location']['requesturl'].split('/')
             state = weather_path[-2]
@@ -103,7 +102,8 @@ def weather(sender, **kwargs):
                     city=city
             )
             weather_data = json.loads(requests.get(weather_url).text)
-            print(weather_data)
+            # Uncomment the next line to view JSON
+            # print(weather_data)
             forecast_title = weather_data['forecast']['txt_forecast']['forecastday'][0]['title']
             fcttext = weather_data['forecast']['txt_forecast']['forecastday'][0]['fcttext']
             forecast_icon = weather_data['forecast']['txt_forecast']['forecastday'][0]['icon_url']
@@ -128,7 +128,6 @@ def cowsay(sender, **kwargs):
     try:
         event = kwargs['event']
 
-        #if 'text' in event:
         regex = re.compile('cowsay\((.*)\)')
         m = regex.search(event.text)
         if m is not None:
@@ -146,8 +145,6 @@ def raise_hands(sender, **kwargs):
     try:
         event = kwargs['event']
 
-        #if re.search("what's wrong", event.text, re.IGNORECASE):
-            #sender.slack_client.send_message('Everything is great.', event.channel)
         if ':simple_smile:' in event.text:
             sender.slack_client.send_message(':raised_hands:', event.channel)
     except:
