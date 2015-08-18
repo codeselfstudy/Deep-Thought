@@ -1,3 +1,5 @@
 blinker==1.3
 git+https://github.com/seancron/slack-rtm.git
 git+https://github.com/seancron/bender.git
+jedi==0.9.0
+requests==2.7.0
