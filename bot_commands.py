@@ -10,8 +10,8 @@ from bender.signals import event_received, message_received
 
 WUNDERGROUND_API_KEY = os.environ['WUNDERGROUND_API_KEY']
 
-
-def roll_die(sides):
+def _roll_die(sides):
+    print('rolling a die')
     return randint(1, int(sides))
 
 @event_received.connect
@@ -59,28 +59,35 @@ def meaning_of_life(sender, **kwargs):
 
 @message_received.connect
 def dice(sender, **kwargs):
-    """Rolls a die."""
+    """Rolls a die.
+    
+    Usage: `roll(d12)`.
+    """
     try:
         event = kwargs['event']
 
-        regex = re.compile('roll \(d(\d{1,4})\)')
+        regex = re.compile('roll\(d(\d{1,4})\)')
         s = regex.search(event.text)
         if s is not None:
+            print(s)
             sides = int(s.groups()[0])
+            print('SIDES: {}'.format(sides))
             if sides > 1 and sides < 9999:
                 output = 'I rolled a {}-sided die and got {}'.format(
                     str(sides),
-                    str(roll_die(sides))
+                    str(_roll_die(sides))
                 )
                 sender.slack_client.send_message(output, event.channel)
     except:
-        print('exception on dice()')
         pass
 
 
 @message_received.connect
 def weather(sender, **kwargs):
-    """Posts the weather report by zip code."""
+    """Posts the weather report by US zip code.
+
+    Usage: weather(12345)
+    """
     try:
         event = kwargs['event']
 
